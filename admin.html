@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin · TumbuhKembang</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#6d5dfc" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="blobs"><span></span><span></span><span></span></div>
+  <div id="demoBanner" class="demo-banner hidden">Mode demo · login: <b>admin@demo.id</b> / <b>admin123</b> · data dari browser ini saja</div>
+
+  <nav class="nav">
+    <div class="container">
+      <a href="index.html" class="brand">
+        <div class="brand-logo">🌱</div>
+        <div><b>TumbuhKembang</b><small>Panel Admin</small></div>
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="hide-sm">Ke Beranda</a>
+        <button class="btn btn-ghost btn-sm hidden" id="btnLogout">Keluar</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ================= LOGIN ================= -->
+  <main id="viewLogin" class="hidden">
+    <div class="container login-wrap">
+      <div class="panel login-card fade-in">
+        <div style="font-size:2.6rem">🔐</div>
+        <h1>Masuk Admin</h1>
+        <p style="color:var(--ink-2);margin:0 0 22px">Khusus admin untuk melihat riwayat konsultasi.</p>
+        <form id="formLogin" novalidate>
+          <div class="field" style="margin-bottom:14px">
+            <label for="email">Email</label>
+            <input class="input" type="email" id="email" autocomplete="username" required />
+          </div>
+          <div class="field" style="margin-bottom:8px">
+            <label for="password">Kata sandi</label>
+            <input class="input" type="password" id="password" autocomplete="current-password" required />
+          </div>
+          <p class="err hidden" id="loginErr"></p>
+          <button class="btn btn-primary" type="submit" style="width:100%;margin-top:12px" id="btnLogin">Masuk</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= DASHBOARD ================= -->
+  <main id="viewDash" class="hidden">
+    <div class="container">
+      <div class="admin-head">
+        <div>
+          <h1>Riwayat Konsultasi</h1>
+          <p id="adminEmail"></p>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" id="btnRefresh">↻ Muat ulang</button>
+          <button class="btn btn-primary btn-sm" id="btnExport">⬇ Ekspor CSV</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="ico" style="background:#ece9ff">📋</div><span>Total konsultasi</span><b id="sTotal">0</b></div>
+        <div class="stat"><div class="ico" style="background:#e3f7f4">📅</div><span>Bulan ini</span><b id="sBulan">0</b></div>
+        <div class="stat"><div class="ico" style="background:#ffe9e2">🧠</div><span>Diagnosa terbanyak</span><b class="sm" id="sTop">-</b></div>
+        <div class="stat"><div class="ico" style="background:#fff3d6">🎂</div><span>Rata-rata usia</span><b id="sUsia">-</b></div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card">
+          <h3>📊 Sebaran hasil diagnosa</h3>
+          <div class="bars" id="distBars"></div>
+        </div>
+        <div class="card">
+          <h3>👦👧 Jenis kelamin</h3>
+          <div class="bars" id="jkBars"></div>
+          <h3 style="margin-top:22px">🎂 Kelompok usia</h3>
+          <div class="bars" id="usiaBars"></div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:18px">
+        <div class="toolbar">
+          <input class="input" id="q" placeholder="Cari nama anak / orang tua…" />
+          <select class="input" id="fDiag"><option value="">Semua diagnosa</option></select>
+        </div>
+        <div class="table-wrap">
+          <table class="t responsive">
+            <thead><tr><th>Tanggal</th><th>Nama Anak</th><th>JK</th><th>Usia</th><th>Orang Tua</th><th>Hasil</th><th>Belief</th><th></th></tr></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <div class="empty hidden" id="empty"><div>🗂️</div>Belum ada riwayat konsultasi.</div>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal hidden" id="modal"><div class="modal-box" id="modalBox"></div></div>
+  <div class="toast" id="toast"></div>
+  <footer><div class="container">TumbuhKembang · Panel Admin</div></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

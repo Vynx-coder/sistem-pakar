@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TumbuhKembang · Deteksi Dini Gangguan Perkembangan Anak</title>
+  <meta name="description" content="Sistem pakar deteksi dini gangguan perkembangan anak usia 1–5 tahun dengan metode Dempster-Shafer dan Certainty Factor." />
+  <meta name="theme-color" content="#6d5dfc" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="blobs"><span></span><span></span><span></span></div>
+  <div id="demoBanner" class="demo-banner hidden">Mode demo: riwayat hanya tersimpan di browser ini. Isi <code>js/config.js</code> untuk menyimpan ke database.</div>
+
+  <nav class="nav">
+    <div class="container">
+      <a href="#" class="brand" data-go="home">
+        <div class="brand-logo">🌱</div>
+        <div><b>TumbuhKembang</b><small>Sistem Pakar Deteksi Dini</small></div>
+      </a>
+      <div class="nav-links">
+        <a href="#cara" class="hide-sm">Cara Kerja</a>
+        <a href="#gangguan" class="hide-sm">Gangguan</a>
+        <a href="#" class="btn btn-primary btn-sm" data-go="form" style="color:#fff">Mulai Cek</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ================= HOME ================= -->
+  <main id="viewHome">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="fade-in">
+          <span class="pill"><i>Usia 1–5 tahun</i> Gratis &amp; tanpa daftar</span>
+          <h1>Kenali tumbuh kembang <span class="grad">si kecil</span> lebih awal</h1>
+          <p class="lead">Jawab beberapa pertanyaan tentang perilaku anak sehari-hari. Sistem pakar akan menganalisis kemungkinan gangguan perkembangan dan memberi saran penanganan awal di rumah.</p>
+          <div class="hero-cta">
+            <a href="#" class="btn btn-primary" data-go="form">Mulai Konsultasi →</a>
+            <a href="#cara" class="btn btn-ghost">Pelajari Dulu</a>
+          </div>
+          <div class="hero-stats">
+            <div><b>47</b><span>Gejala dinilai</span></div>
+            <div><b>6</b><span>Jenis gangguan</span></div>
+            <div><b>±5</b><span>Menit pengisian</span></div>
+          </div>
+        </div>
+        <div class="hero-art fade-in" aria-hidden="true">
+          <div class="hero-card main">
+            <div class="big-emoji">🧒</div>
+            <b>Skrining Awal</b>
+            <small>Dempster-Shafer + Certainty Factor</small>
+          </div>
+          <div class="hero-card chip c1"><span class="dot" style="background:#ece9ff">💬</span>Bicara &amp; Bahasa</div>
+          <div class="hero-card chip c2"><span class="dot" style="background:#e3f7f4">🤝</span>Interaksi Sosial</div>
+          <div class="hero-card chip c3"><span class="dot" style="background:#ffe9e2">🎯</span>Perhatian</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cara">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Cara Kerja</div>
+          <h2>Tiga langkah sederhana</h2>
+          <p>Tidak perlu membuat akun. Cukup isi data singkat anak dan jawab pertanyaan sesuai kondisi yang Anda amati.</p>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="num" style="background:var(--primary)">1</div><h3>Isi data anak</h3><p>Nama panggilan, jenis kelamin, dan tanggal lahir anak.</p></div>
+          <div class="step"><div class="num" style="background:var(--coral)">2</div><h3>Jawab pertanyaan</h3><p>Pilih seberapa yakin Anda setiap gejala muncul pada anak: dari "Tidak" sampai "Sangat Yakin".</p></div>
+          <div class="step"><div class="num" style="background:var(--mint)">3</div><h3>Lihat hasil</h3><p>Dapatkan persentase kemungkinan tiap gangguan beserta saran penanganan awal dari pakar.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="gangguan">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Basis Pengetahuan</div>
+          <h2>Gangguan yang dapat dideteksi</h2>
+          <p>Disusun dari DSM-5-TR dan bobot keyakinan pakar (psikolog perkembangan anak).</p>
+        </div>
+        <div class="disorders" id="disorderList"></div>
+        <div class="notice" style="margin-top:24px">
+          <span>⚠️</span>
+          <div>Hasil sistem ini adalah <b>skrining awal</b> dan tidak menggantikan pemeriksaan serta diagnosis oleh psikolog atau dokter.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= FORM DATA ANAK ================= -->
+  <main id="viewForm" class="hidden">
+    <section>
+      <div class="container" style="max-width:720px">
+        <div class="panel fade-in">
+          <div class="eyebrow">Langkah 1 dari 2</div>
+          <h2 style="font-family:var(--display);font-weight:600;margin:6px 0 4px;font-size:1.8rem">Data singkat anak</h2>
+          <p style="color:var(--ink-2);margin:0 0 24px">Data ini hanya dipakai untuk riwayat konsultasi.</p>
+          <form id="formAnak" novalidate>
+            <div class="form-grid">
+              <div class="field full">
+                <label for="namaAnak">Nama anak</label>
+                <input class="input" id="namaAnak" maxlength="80" placeholder="Contoh: Alya" autocomplete="off" required />
+              </div>
+              <div class="field full">
+                <label>Jenis kelamin</label>
+                <div class="seg">
+                  <input type="radio" name="jk" id="jkL" value="Laki-laki" required /><label for="jkL">👦 Laki-laki</label>
+                  <input type="radio" name="jk" id="jkP" value="Perempuan" /><label for="jkP">👧 Perempuan</label>
+                </div>
+              </div>
+              <div class="field">
+                <label for="tglLahir">Tanggal lahir</label>
+                <input class="input" type="date" id="tglLahir" required />
+                <span class="hint" id="usiaHint">Sistem ini untuk anak usia 1–5 tahun.</span>
+              </div>
+              <div class="field">
+                <label for="namaOrtu">Nama orang tua/wali <span class="opt">(opsional)</span></label>
+                <input class="input" id="namaOrtu" maxlength="80" placeholder="Contoh: Ibu Rina" autocomplete="off" />
+              </div>
+            </div>
+            <p class="err hidden" id="formErr" style="margin-top:14px"></p>
+            <div class="wizard-nav">
+              <button type="button" class="btn btn-ghost" data-go="home">← Kembali</button>
+              <button type="submit" class="btn btn-primary">Lanjut ke Pertanyaan →</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= KUESIONER ================= -->
+  <main id="viewQuiz" class="hidden">
+    <section>
+      <div class="container" style="max-width:880px">
+        <div class="panel">
+          <div class="wizard-top">
+            <h2 id="groupTitle"></h2>
+            <span class="count" id="answerCount"></span>
+          </div>
+          <div class="progress"><span id="progressBar"></span></div>
+          <div class="step-dots" id="stepDots"></div>
+          <div class="notice info" style="margin-bottom:18px">
+            <span>💡</span>
+            <div>Pilih <b>Tidak</b> jika gejala tidak muncul. Semakin sering atau jelas gejala terlihat, pilih tingkat keyakinan yang lebih tinggi.</div>
+          </div>
+          <div class="q-list" id="qList"></div>
+          <p class="err hidden" id="quizErr" style="margin-top:14px"></p>
+          <div class="wizard-nav">
+            <button class="btn btn-ghost" id="btnPrev">← Sebelumnya</button>
+            <button class="btn btn-primary" id="btnNext">Selanjutnya →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= LOADING ================= -->
+  <main id="viewLoading" class="hidden">
+    <section><div class="container"><div class="loading"><div class="spinner"></div><b>Menganalisis jawaban…</b><p style="color:var(--ink-3)">Menggabungkan bukti dengan aturan Dempster-Shafer</p></div></div></section>
+  </main>
+
+  <!-- ================= HASIL ================= -->
+  <main id="viewResult" class="hidden">
+    <section>
+      <div class="container" style="max-width:960px" id="resultBox"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">© <span id="year"></span> TumbuhKembang · Sistem Pakar Deteksi Dini Gangguan Perkembangan Anak · <a href="admin.html">Admin</a></div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
