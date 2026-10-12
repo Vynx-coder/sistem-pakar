@@ -105,6 +105,7 @@
               <div class="field full">
                 <label for="namaAnak">Nama anak</label>
                 <input class="input" id="namaAnak" maxlength="80" placeholder="Contoh: Alya" autocomplete="off" required />
+                <span class="hint">Hanya huruf, tanpa angka atau tanda baca.</span>
               </div>
               <div class="field full">
                 <label>Jenis kelamin</label>
@@ -120,7 +121,7 @@
               </div>
               <div class="field">
                 <label for="namaOrtu">Nama orang tua/wali <span class="opt">(opsional)</span></label>
-                <input class="input" id="namaOrtu" maxlength="80" placeholder="Contoh: Ibu Rina" autocomplete="off" />
+                <input class="input" id="namaOrtu" maxlength="80" placeholder="Contoh: Ibu Rina" autocomplete="off" inputmode="text" />
               </div>
             </div>
             <p class="err hidden" id="formErr" style="margin-top:14px"></p>
@@ -147,7 +148,7 @@
           <div class="step-dots" id="stepDots"></div>
           <div class="notice info" style="margin-bottom:18px">
             <span>💡</span>
-            <div>Pilih <b>Tidak</b> jika gejala tidak muncul. Semakin sering atau jelas gejala terlihat, pilih tingkat keyakinan yang lebih tinggi.</div>
+            <div>Pilih <b>Tidak</b> jika pernyataan tidak sesuai dengan kondisi anak. Semakin sering atau semakin jelas hal itu terlihat, pilih tingkat keyakinan yang lebih tinggi.</div>
           </div>
           <div class="q-list" id="qList"></div>
           <p class="err hidden" id="quizErr" style="margin-top:14px"></p>
@@ -173,7 +174,7 @@
   </main>
 
   <footer>
-    <div class="container">© <span id="year"></span> TumbuhKembang · Sistem Pakar Deteksi Dini Gangguan Perkembangan Anak · <a href="admin.html">Admin</a></div>
+    <div class="container">© <span id="year"></span> TumbuhKembang · AbdulHamidAmin · <a href="admin.html">Admin</a></div>
   </footer>
 
   <div class="toast" id="toast"></div>

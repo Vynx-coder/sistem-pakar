@@ -106,6 +106,7 @@ Pilih **salah satu** cara.
 
 ## 4. Uji akhir (checklist)
 
+
 1. Buka situs di HP dan laptop → isi data anak → jawab semua pertanyaan → hasil muncul dan ada notifikasi *"Hasil konsultasi tersimpan"*.
 2. Coba kasus Manual Tabel 4.5 (E1 Yakin, E7 Cukup Yakin, E9 Sangat Yakin, E17 Yakin, E24 Cukup Yakin, E28 Sedikit Yakin, E42 Yakin, lainnya Tidak) → hasil harus **Autism Spectrum Disorder ±54,8%** (manual: 54,82%).
 3. Buka `/admin` → login → riwayat tadi tampil.

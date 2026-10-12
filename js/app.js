@@ -25,6 +25,8 @@ document.addEventListener("click", (e) => {
   const tujuan = t.dataset.go;
   if (tujuan === "home") tampil("Home");
   if (tujuan === "form") tampil("Form");
+  if (tujuan === "beranda") { resetForm(); tampil("Home"); }
+  if (tujuan === "baru") { resetForm(); tampil("Form"); }
 });
 
 function toast(msg) {
@@ -58,6 +60,26 @@ function teksUsia(bulan) {
   return [th ? th + " tahun" : "", bl ? bl + " bulan" : ""].filter(Boolean).join(" ") || "0 bulan";
 }
 
+// Nama hanya boleh huruf dan spasi (tanpa angka, titik, atau tanda lain)
+const POLA_NAMA = /^[\p{L} ]+$/u;
+["#namaAnak", "#namaOrtu"].forEach((id) => {
+  $(id).addEventListener("input", (e) => {
+    const bersih = e.target.value.replace(/[^\p{L} ]/gu, "").replace(/ {2,}/g, " ");
+    if (bersih !== e.target.value) e.target.value = bersih;
+  });
+});
+
+function resetForm() {
+  $("#formAnak").reset();
+  $("#formErr").classList.add("hidden");
+  const hint = $("#usiaHint");
+  hint.textContent = "Sistem ini untuk anak usia 1–5 tahun.";
+  hint.style.color = "";
+  state.anak = null;
+  state.jawaban = {};
+  state.grup = 0;
+}
+
 const tgl = $("#tglLahir");
 tgl.max = new Date().toISOString().slice(0, 10);
 tgl.addEventListener("change", () => {
@@ -75,7 +97,10 @@ $("#formAnak").addEventListener("submit", (e) => {
   const lahir = tgl.value;
   const err = $("#formErr");
   let pesan = "";
+  const ortu = $("#namaOrtu").value.trim();
   if (!nama) pesan = "Nama anak wajib diisi.";
+  else if (!POLA_NAMA.test(nama)) pesan = "Nama anak hanya boleh berisi huruf.";
+  else if (ortu && !POLA_NAMA.test(ortu)) pesan = "Nama orang tua/wali hanya boleh berisi huruf.";
   else if (!jk) pesan = "Pilih jenis kelamin anak.";
   else if (!lahir) pesan = "Tanggal lahir wajib diisi.";
   else {
@@ -234,7 +259,7 @@ function renderTanpaGejala() {
       <h2 style="font-family:var(--display);font-weight:600;margin:6px 0">Tidak ada gejala yang dipilih</h2>
       <p style="color:var(--ink-2);max-width:520px;margin:0 auto">Berdasarkan jawaban Anda, tidak ditemukan tanda gangguan perkembangan pada ${esc(state.anak.nama_anak)}. Tetap pantau tumbuh kembang anak dan lakukan pemeriksaan rutin ke posyandu/dokter.</p>
       ${metaAnak().replace('class="child-meta"', 'class="child-meta" style="justify-content:center"')}
-      <div class="result-actions"><button class="btn btn-primary" data-go="form">Konsultasi Baru</button></div>
+      <div class="result-actions"><button class="btn btn-ghost" data-go="beranda">🏠 Kembali ke Beranda</button><button class="btn btn-primary" data-go="baru">Konsultasi Baru</button></div>
     </div>`;
 }
 
@@ -302,7 +327,8 @@ function renderHasil(h) {
 
     <div class="result-actions">
       <button class="btn btn-ghost" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
-      <button class="btn btn-primary" data-go="form">Konsultasi Baru</button>
+      <button class="btn btn-ghost" data-go="beranda">🏠 Kembali ke Beranda</button>
+      <button class="btn btn-primary" data-go="baru">Konsultasi Baru</button>
     </div>`;
 
   // Animasi
