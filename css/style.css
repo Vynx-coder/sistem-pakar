@@ -196,7 +196,7 @@ section { padding: 48px 0; }
 .q-head { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
 .q-code { flex: none; font-size: .75rem; font-weight: 800; color: var(--primary); background: var(--primary-soft); padding: 3px 9px; border-radius: 8px; margin-top: 2px; }
 .q-text { font-weight: 600; }
-.opts { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.opts { display: grid; grid-template-columns: 1fr; gap: 8px; }
 .opts input { position: absolute; opacity: 0; pointer-events: none; }
 .opts label {
   text-align: center; padding: 10px 6px; border-radius: 12px; border: 1.5px solid var(--line); background: #fff;
@@ -317,8 +317,7 @@ table.t tbody tr:hover { background: #faf9ff; }
   .hero { padding-top: 28px; }
   .steps, .disorders { grid-template-columns: 1fr; }
   .form-grid { grid-template-columns: 1fr; }
-  .opts { grid-template-columns: repeat(2, 1fr); }
-  .opts label:first-of-type { grid-column: 1 / -1; }
+  .opts label { padding: 13px 10px; font-size: .92rem; }
   .result-hero { grid-template-columns: 1fr; justify-items: center; text-align: center; }
   .child-meta { justify-content: center; }
   .ring { width: 160px; height: 160px; }

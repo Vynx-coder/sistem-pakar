@@ -153,12 +153,12 @@ function renderGrup() {
       <div class="q ${v !== undefined ? "answered" : ""}" data-kode="${kode}">
         <div class="q-head"><span class="q-code">${kode}</span><span class="q-text">${esc(g.teks)}</span></div>
         <div class="opts" role="radiogroup" aria-label="${esc(g.teks)}">
-          ${PILIHAN_CF.map((p, i) => `
+          ${PILIHAN_CF.map((p, i) => ({ p, i })).reverse().map(({ p, i }) => `
             <input type="radio" name="${kode}" id="${kode}_${i}" value="${p.nilai}" ${v === p.nilai ? "checked" : ""} />
             <label for="${kode}_${i}" class="o${i}">${p.label}</label>`).join("")}
         </div>
       </div>`;
-  }).join("") + `<button type="button" class="btn btn-ghost btn-sm" id="allNo" style="align-self:flex-start;white-space:normal;text-align:center">Tandai sisa di bagian ini sebagai "Tidak"</button>`;
+  }).join("");
 
   $("#btnPrev").textContent = state.grup === 0 ? "← Data Anak" : "← Sebelumnya";
   $("#btnNext").textContent = state.grup === KELOMPOK.length - 1 ? "Lihat Hasil ✨" : "Selanjutnya →";
@@ -171,11 +171,6 @@ $("#qList").addEventListener("change", (e) => {
   state.jawaban[e.target.name] = Number(e.target.value);
   e.target.closest(".q").classList.add("answered");
   updateProgress();
-});
-$("#qList").addEventListener("click", (e) => {
-  if (e.target.id !== "allNo") return;
-  KELOMPOK[state.grup].kode.forEach((c) => { if (!(c in state.jawaban)) state.jawaban[c] = 0; });
-  renderGrup();
 });
 $("#stepDots").addEventListener("click", (e) => {
   const b = e.target.closest("button[data-g]");
