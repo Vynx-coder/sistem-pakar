@@ -9,5 +9,5 @@
    riwayat disimpan di browser (localStorage) dan login admin
    memakai akun demo. Cocok untuk mencoba tampilan saja.
    ========================================================= */
-const SUPABASE_URL = "";
-const SUPABASE_ANON_KEY = "";
+const SUPABASE_URL = "https://vxwjyyxrsqtvbatgtlww.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_BevNC0rp8b6aOo6grf_Z3A_y7Z1wexy";
