@@ -44,7 +44,7 @@ async function bukaDashboard(user) {
   $("#viewDash").classList.remove("hidden");
   $("#btnLogout").classList.remove("hidden");
   $("#adminEmail").textContent = "Masuk sebagai " + (user.email || "admin");
-  $("#fDiag").innerHTML = `<option value="">Semua diagnosa</option>` + GANGGUAN.map((g) => `<option value="${g.kode}">${g.nama}</option>`).join("") + `<option value="-">Tidak ada gejala</option>`;
+  $("#fDiag").innerHTML = `<option value="">Semua diagnosa</option>` + GANGGUAN.map((g) => `<option value="${g.kode}">${g.nama}</option>`).join("") + `<option value="-">Belum dapat dihitung</option>`;
   await muat();
 }
 

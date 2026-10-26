@@ -209,15 +209,27 @@ $("#btnNext").addEventListener("click", () => {
 });
 
 /* ---------- Hasil ---------- */
+const MIN_GEJALA = 3;       // minimal gejala dipilih (selain "Tidak")
+const BATAS_TINGGI = 50;    // belief >= 50%      → kecenderungan tinggi
+const BATAS_SEDANG = 40;    // belief 40% – <50%  → kecenderungan sedang; < 40% → rendah
+
 async function prosesHasil() {
   const hasil = hitungDiagnosa(state.jawaban);
   tampil("Loading");
   await new Promise((r) => setTimeout(r, 1200));
 
-  if (!hasil) {
-    renderTanpaGejala();
+  // Gejala dipilih (selain "Tidak") kurang dari 3: skrining belum dapat dihitung
+  if (!hasil || hasil.eObs.length < MIN_GEJALA) {
+    renderGejalaKurang();
     tampil("Result");
-    simpan(null);
+    simpan(null, "kurang");
+    return;
+  }
+  // Konflik total (K = 1): gejala tidak dapat digabung menjadi satu kesimpulan
+  if (hasil.langkah.some((l) => l.dilewati)) {
+    renderKonflik(hasil);
+    tampil("Result");
+    simpan(null, "konflik");
     return;
   }
   renderHasil(hasil);
@@ -225,13 +237,13 @@ async function prosesHasil() {
   simpan(hasil);
 }
 
-async function simpan(hasil) {
+async function simpan(hasil, jenis) {
   const data = {
     ...state.anak,
     jawaban: state.jawaban,
     hasil: hasil ? Object.fromEntries(hasil.belief.map((b) => [b.kode, Number(b.nilai.toFixed(6))])) : {},
     diagnosa_kode: hasil ? hasil.utama.kode : "-",
-    diagnosa_nama: hasil ? hasil.utama.nama : "Tidak ada gejala",
+    diagnosa_nama: hasil ? hasil.utama.nama : jenis === "konflik" ? "Konflik K=1" : "Gejala kurang dari 3",
     persentase: hasil ? Number((hasil.utama.nilai * 100).toFixed(2)) : 0,
   };
   const r = await DB.simpanKonsultasi(data);
@@ -247,24 +259,60 @@ function metaAnak() {
   </div>`;
 }
 
-function renderTanpaGejala() {
+function renderGejalaKurang() {
   $("#resultBox").innerHTML = `
     <div class="panel fade-in" style="text-align:center">
-      <div style="font-size:4rem">🌟</div>
-      <h2 style="font-family:var(--display);font-weight:600;margin:6px 0">Tidak ada gejala yang dipilih</h2>
-      <p style="color:var(--ink-2);max-width:520px;margin:0 auto">Berdasarkan jawaban Anda, tidak ditemukan tanda gangguan perkembangan pada ${esc(state.anak.nama_anak)}. Tetap pantau tumbuh kembang anak dan lakukan pemeriksaan rutin ke posyandu/dokter.</p>
+      <div style="font-size:4rem">ℹ️</div>
+      <h2 style="font-family:var(--display);font-weight:600;margin:6px 0">Skrining belum dapat dihitung</h2>
+      <p style="color:var(--ink-2);max-width:520px;margin:0 auto">Gejala yang dipilih selain “Tidak” kurang dari ${MIN_GEJALA}, sehingga skrining belum dapat dihitung. Ini tidak berarti anak pasti normal; bila Anda khawatir, tetap konsultasikan.</p>
       ${metaAnak().replace('class="child-meta"', 'class="child-meta" style="justify-content:center"')}
       <div class="result-actions"><button class="btn btn-ghost" data-go="beranda">🏠 Kembali ke Beranda</button><button class="btn btn-primary" data-go="baru">Konsultasi Baru</button></div>
+    </div>`;
+}
+
+function htmlGejalaDipilih(h) {
+  return h.eObs.map((e) => {
+    const label = PILIHAN_CF.find((p) => p.nilai === e.cf)?.label || e.cf;
+    return `<span><b>${e.kode}</b> ${esc(GEJALA_MAP[e.kode].teks)} · <i>${label}</i></span>`;
+  }).join("");
+}
+
+function renderKonflik(h) {
+  $("#resultBox").innerHTML = `
+    <div class="panel fade-in" style="text-align:center">
+      <div style="font-size:4rem">ℹ️</div>
+      <h2 style="font-family:var(--display);font-weight:600;margin:6px 0">Gejala belum dapat disimpulkan</h2>
+      <p style="color:var(--ink-2);max-width:560px;margin:0 auto">Gejala yang Anda pilih beragam dan tidak dapat disimpulkan menjadi satu hasil oleh sistem. Hal ini dapat terjadi pada anak dengan ciri perkembangan yang bervariasi. Untuk kepastian, kami menyarankan pemeriksaan langsung oleh psikolog yang ahli dalam perkembangan anak. Daftar gejala yang Anda pilih di bawah ini dapat dibawa saat konsultasi.</p>
+      ${metaAnak().replace('class="child-meta"', 'class="child-meta" style="justify-content:center"')}
+    </div>
+
+    <div class="card fade-in" style="margin-top:20px">
+      <h3>📝 Gejala yang Anda pilih (${h.eObs.length})</h3>
+      <div class="symptom-tags">${htmlGejalaDipilih(h)}</div>
+    </div>
+
+    <div class="notice fade-in" style="margin-top:20px">
+      <span>⚠️</span>
+      <div>Hasil deteksi ini merupakan <b>skrining awal</b> dan tidak menggantikan pemeriksaan serta diagnosis oleh psikolog atau dokter. Disarankan berkonsultasi dengan tenaga profesional untuk memastikan kondisi anak.</div>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn btn-ghost" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+      <button class="btn btn-ghost" data-go="beranda">🏠 Kembali ke Beranda</button>
+      <button class="btn btn-primary" data-go="baru">Konsultasi Baru</button>
     </div>`;
 }
 
 function renderHasil(h) {
   const u = h.utama;
   const persen = u.nilai * 100;
-  const gejalaDipilih = h.eObs.map((e) => {
-    const label = PILIHAN_CF.find((p) => p.nilai === e.cf)?.label || e.cf;
-    return `<span><b>${e.kode}</b> ${esc(GEJALA_MAP[e.kode].teks)} · <i>${label}</i></span>`;
-  }).join("");
+  const persenTampil = Number(persen.toFixed(2)); // sama dengan angka yang ditampilkan
+  const tingkat = persenTampil >= BATAS_TINGGI
+    ? { judul: "Kecenderungan tinggi pada", saran: "Disarankan berkonsultasi dengan dokter atau psikolog anak untuk pemeriksaan lebih lanjut." }
+    : persenTampil >= BATAS_SEDANG
+    ? { judul: "Kecenderungan sedang pada", saran: "Pantau perkembangan anak dan berkonsultasi bila gejala menetap." }
+    : { judul: "Kecenderungan rendah pada", saran: "Kecenderungannya masih rendah, tetapi ini tidak berarti anak pasti normal. Bila Anda khawatir, tetap konsultasikan." };
+  const gejalaDipilih = htmlGejalaDipilih(h);
 
   const f4 = (v) => v.toFixed(4);
   const tabelMass = h.eObs.map((e) => `<tr><td>${e.kode}</td><td class="num">${e.cf}</td>${e.m.map((v) => `<td class="num">${f4(v)}</td>`).join("")}<td class="num">${f4(e.theta)}</td></tr>`).join("");
@@ -277,8 +325,9 @@ function renderHasil(h) {
         <div class="ring" id="ring" style="--c:${u.warna}"><div><b id="ringVal">0%</b><small>Belief</small></div></div>
         <div>
           <div class="eyebrow">Hasil Skrining Awal</div>
-          <h2>Kemungkinan mengarah pada <span style="color:${u.warna}">${u.nama}</span></h2>
+          <h2>${tingkat.judul} <span style="color:${u.warna}">${u.nama}</span></h2>
           <p style="color:var(--ink-2);margin:0">${u.deskripsi}</p>
+          <p class="tier-note">${tingkat.saran}</p>
           ${metaAnak()}
         </div>
       </div>

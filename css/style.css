@@ -103,6 +103,8 @@ input, select { font: inherit; }
 .hero h1 .grad { background: linear-gradient(120deg, var(--primary), var(--coral)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .hero p.lead { font-size: 1.1rem; color: var(--ink-2); max-width: 540px; margin: 0 0 28px; }
 .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+.privacy-note { margin: 16px 0 0; font-size: .9rem; color: var(--ink-3); }
+.tier-note { margin: 10px 0 0; padding: 10px 14px; border-radius: var(--radius-sm); background: var(--primary-soft); font-size: .92rem; color: var(--ink); }
 .hero-stats { display: flex; gap: 28px; margin-top: 34px; flex-wrap: wrap; }
 .hero-stats div b { font-family: var(--display); font-size: 1.8rem; display: block; line-height: 1; }
 .hero-stats div span { font-size: .85rem; color: var(--ink-3); }
